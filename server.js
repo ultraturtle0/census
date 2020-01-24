@@ -6,6 +6,13 @@ var shell = require('shelljs');
 
 const PORT = 14666;
 
+var codeCheck = (res) =>
+    (code, stdout, stderr) =>
+        code ?
+            res.send({ message: stdout }) :
+            res.status(500).send({ errors: ['command failed.', stderr] });
+        
+
 app.use(morgan);
 app.use(methodOverride);
 app.use(bodyParser.urlencoded({
@@ -13,16 +20,14 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 app.route('/api/status')
-    .get((req, res, next) => res.send({ message: 'active' }))
+    .get((req, res, next) => shell.exec('uptime', codeCheck(res)))
     .post((req, res, next) => {
-        var code = 0;
-        if (req.body.command === 'poweroff')            
-		code = shell.exec('poweroff').code;
-        
-        if (!code)
-            return res.status(500).send({ errors: ['command failed.'] });
-        else
+        if (req.body.command === 'poweroff') { 
+            code = shell.exec('poweroff').code;
             return res.send({ message: 'success!' });
+        } else {
+            return res.status(500).send({ errors: ['command failed.'] });
+        };
     });
 
 
