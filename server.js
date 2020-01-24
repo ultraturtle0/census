@@ -9,9 +9,8 @@ const PORT = 14666;
 var codeCheck = (res) =>
     (code, stdout, stderr) =>
         code ?
-            res.send({ message: stdout }) :
-            res.status(500).send({ errors: ['command failed.', stderr] });
-        
+            res.status(500).send({ errors: ['command failed.', stderr] }) :
+            res.send({ message: stdout });
 
 app.use(morgan);
 app.use(methodOverride);
