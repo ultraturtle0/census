@@ -17,8 +17,9 @@ app.route('/api/status')
     .post((req, res, next) => {
         var code = 0;
         if (req.body.command === 'poweroff') {
-            code = shell.exec('poweroff', function (code, stdout, stderr) {});
-            return res.send({ message: 'success!' });
+            code = shell.exec('poweroff', function (code, stdout, stderr) {
+                return res.send({ code, stdout, stderr });
+            });
         } else {
             return res.status(500).send({ errors: ['command failed.'] });
         };
