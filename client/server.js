@@ -22,7 +22,7 @@ app.route('/api/status')
     .get((req, res, next) => shell.exec('uptime', codeCheck(res)))
     .post((req, res, next) => {
         if (req.body.command === 'poweroff') { 
-            code = shell.exec('poweroff').code;
+            code = shell.exec('/sbin/poweroff').code;
             return res.send({ message: 'success!' });
         } else {
             return res.status(500).send({ errors: ['command failed.'] });
